@@ -19,19 +19,19 @@ app = FastAPI(title="GroundTruth", version="0.1.0")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Allowed CORS origins
+# Allowed static origins
 allowed_origins = [
     "http://localhost:3000",
-    "https://*.vercel.app",  # Allows all Vercel deployments and preview URLs
+    "https://groundtruth-gilt.vercel.app",
 ]
 
-# Include settings.frontend_origin if defined and not already present
 if settings.frontend_origin and settings.frontend_origin not in allowed_origins:
     allowed_origins.append(settings.frontend_origin)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Regex pattern matching ALL Vercel subdomains
     allow_credentials=True,
     allow_methods=["*"],  # Allows GET, POST, OPTIONS, etc.
     allow_headers=["*"],
